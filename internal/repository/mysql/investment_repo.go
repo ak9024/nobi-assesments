@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"nobi-assesment/internal/domain"
 	"nobi-assesment/internal/repository"
+	"nobi-assesment/pkg/utils"
 )
 
 type mysqlInvestmentRepository struct {
@@ -34,7 +35,7 @@ func (r *mysqlInvestmentRepository) GetByID(ctx context.Context, id string) (*do
 		return nil, err
 	}
 
-	investment.NAB = validateNAB(investment.TotalBalance, investment.TotalUnits)
+	investment.NAB = utils.ValidateNAB(investment.TotalBalance, investment.TotalUnits)
 
 	return &investment, nil
 }
@@ -55,7 +56,7 @@ func (r *mysqlInvestmentRepository) GetAll(ctx context.Context) ([]*domain.Inves
 			return nil, err
 		}
 
-		investment.NAB = validateNAB(investment.TotalBalance, investment.TotalUnits)
+		investment.NAB = utils.ValidateNAB(investment.TotalBalance, investment.TotalUnits)
 		investments = append(investments, &investment)
 	}
 

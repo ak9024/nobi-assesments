@@ -16,7 +16,7 @@ type CustomerInvestment struct {
 }
 
 type CustomerPortfolio struct {
-	Customer   Customer   `json:"customer"`
+	Customer   string     `json:"customer_id"`
 	Investment Investment `json:"investment"`
 	Portfolio  struct {
 		ID      string  `json:"id"`

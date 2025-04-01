@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"nobi-assesment/internal/domain"
 	"nobi-assesment/internal/repository"
+	"nobi-assesment/pkg/utils"
 )
 
 type mysqlCustomerInvestmentRepository struct {
@@ -69,11 +70,11 @@ func (r *mysqlCustomerInvestmentRepository) GetCustomerPortfolio(ctx context.Con
 		return nil, err
 	}
 
-	investment.NAB = validateNAB(investment.TotalBalance, investment.TotalUnits)
+	investment.NAB = utils.ValidateNAB(investment.TotalBalance, investment.TotalUnits)
 
 	// Get customer investment
 	portfolio := domain.CustomerPortfolio{
-		Customer:   customer,
+		Customer:   customer.ID,
 		Investment: investment,
 	}
 
@@ -90,7 +91,7 @@ func (r *mysqlCustomerInvestmentRepository) GetCustomerPortfolio(ctx context.Con
 
 	portfolio.Portfolio.ID = portfolioID
 	portfolio.Portfolio.Units = units
-	portfolio.Portfolio.Balance = roundDown(units*investment.NAB, 2)
+	portfolio.Portfolio.Balance = utils.RoundDown(units*investment.NAB, 2)
 
 	return &portfolio, nil
 }

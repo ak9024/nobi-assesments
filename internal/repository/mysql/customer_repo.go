@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"nobi-assesment/internal/domain"
 	"nobi-assesment/internal/repository"
+	"nobi-assesment/pkg/utils"
 )
 
 type mysqlCustomerRepository struct {
@@ -52,10 +53,10 @@ func (r *mysqlCustomerRepository) GetByID(ctx context.Context, id string) (*doma
 
 		var nab float64 = 1.0
 		if investTotalUnits > 0 {
-			nab = roundDown(investTotalBalance/investTotalUnits, 4)
+			nab = utils.RoundDown(investTotalBalance/investTotalUnits, 4)
 		}
 
-		customerBalance := roundDown(units*nab, 2)
+		customerBalance := utils.RoundDown(units*nab, 2)
 		totalBalance += customerBalance
 		totalUnits += units
 	}
@@ -106,10 +107,10 @@ func (r *mysqlCustomerRepository) GetAll(ctx context.Context) ([]*domain.Custome
 
 			var nab float64 = 1.0
 			if investTotalUnits > 0 {
-				nab = roundDown(investTotalBalance/investTotalUnits, 4)
+				nab = utils.RoundDown(investTotalBalance/investTotalUnits, 4)
 			}
 
-			customerBalance := roundDown(units*nab, 2)
+			customerBalance := utils.RoundDown(units*nab, 2)
 			totalBalance += customerBalance
 			totalUnits += units
 		}
