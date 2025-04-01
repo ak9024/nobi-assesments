@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mariadb:latest
+    container_name: mariadb
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-29/jSGGz&x0c}
+      MARIADB_DATABASE: ${MYSQL_DATABASE:-nobi_investment}
+      MARIADB_USER: ${MYSQL_USER:-user}
+      MARIADB_PASSWORD: ${MYSQL_PASSWORD:-29/jSGGz&x0c}
+      MARIADB_AUTO_UPGRADE: "true"
+      MARIADB_INITDB_SKIP_TZINFO: "false"
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database.sql:/docker-entrypoint-initdb.d/database.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-29/jSGGz&x0c}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+    networks:
+      - mysql_network
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --default-authentication-plugin=mysql_native_password
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  mysql_network:
+    driver: bridge
