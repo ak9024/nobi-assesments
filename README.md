@@ -40,10 +40,25 @@ I have made some changes to the endpoint list to make it neater and easier to re
 - UUID - For unique identification of each entity (replacing auto increment)
 - Docker (optional) - For containerization and deployment
 
-
 ### Getting Started
 
+Just for notes this project just covering one cycle transaction with assumption NAB value keep with default value == 1.
+
 If you have `docker` just run `sh run.sh` to run docker compose and integration testing for the api, please check ./tests/api_test.go for references.
+
+### For testing
+
+```shell
+# clone the repository
+git clone https://github.com/username/nobi-investment.git
+cd nobi-investment
+# run all project dependencies
+docker compose up -d
+```
+
+Then open postman and import the collection from `./nobi-assesment.postman_collection.json`
+
+### For development
 
 ```shell
 # clone the repository
