@@ -55,7 +55,7 @@ go mod tidy
 # copy env for configuration
 cp .env.example .env
 # run mysql
-docker compose up -d
+docker compose up -d mysql
 go run .
 ```
 
