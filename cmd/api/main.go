@@ -1,4 +1,4 @@
-package main
+package api
 
 import (
 	"log"
@@ -14,7 +14,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func main() {
+func Execute() {
 	// Load environment variables
 	err := godotenv.Load()
 	if err != nil {
