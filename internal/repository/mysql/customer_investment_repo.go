@@ -3,7 +3,6 @@ package mysql
 import (
 	"context"
 	"database/sql"
-	"errors"
 	"nobi-assesment/internal/domain"
 	"nobi-assesment/internal/repository"
 )
@@ -40,9 +39,6 @@ func (r *mysqlCustomerInvestmentRepository) GetByCustomerAndInvestment(ctx conte
 		&customerInvestment.InvestmentID,
 		&customerInvestment.Units)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			return nil, errors.New("customer investment not found")
-		}
 		return nil, err
 	}
 
@@ -61,9 +57,6 @@ func (r *mysqlCustomerInvestmentRepository) GetCustomerPortfolio(ctx context.Con
 	customerQuery := "SELECT id, name FROM customers WHERE id = ?"
 	err := r.db.QueryRowContext(ctx, customerQuery, customerID).Scan(&customer.ID, &customer.Name)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			return nil, errors.New("customer not found")
-		}
 		return nil, err
 	}
 
@@ -73,9 +66,6 @@ func (r *mysqlCustomerInvestmentRepository) GetCustomerPortfolio(ctx context.Con
 	err = r.db.QueryRowContext(ctx, investmentQuery, investmentID).Scan(
 		&investment.ID, &investment.Name, &investment.TotalUnits, &investment.TotalBalance)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			return nil, errors.New("investment not found")
-		}
 		return nil, err
 	}
 
@@ -94,7 +84,7 @@ func (r *mysqlCustomerInvestmentRepository) GetCustomerPortfolio(ctx context.Con
 	var units float64
 	var portfolioID string
 	err = r.db.QueryRowContext(ctx, query, customerID, investmentID).Scan(&portfolioID, &units)
-	if err != nil && err != sql.ErrNoRows {
+	if err != nil {
 		return nil, err
 	}
 

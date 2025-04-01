@@ -3,7 +3,6 @@ package mysql
 import (
 	"context"
 	"database/sql"
-	"errors"
 	"nobi-assesment/internal/domain"
 	"nobi-assesment/internal/repository"
 )
@@ -28,9 +27,6 @@ func (r *mysqlCustomerRepository) GetByID(ctx context.Context, id string) (*doma
 	var customer domain.Customer
 	err := r.db.QueryRowContext(ctx, query, id).Scan(&customer.ID, &customer.Name, &customer.IsActive)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			return nil, errors.New("customer not found")
-		}
 		return nil, err
 	}
 

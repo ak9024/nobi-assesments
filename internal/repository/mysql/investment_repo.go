@@ -3,7 +3,6 @@ package mysql
 import (
 	"context"
 	"database/sql"
-	"errors"
 	"nobi-assesment/internal/domain"
 	"nobi-assesment/internal/repository"
 )
@@ -30,7 +29,7 @@ func (r *mysqlInvestmentRepository) GetByID(ctx context.Context, id string) (*do
 		&investment.ID, &investment.Name, &investment.TotalUnits, &investment.TotalBalance)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return nil, errors.New("investment not found")
+			return nil, err
 		}
 		return nil, err
 	}

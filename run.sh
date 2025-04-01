@@ -1,2 +1,4 @@
-docker compose up -d
-sleep 30
+docker compose up -d --build
+sleep 15
+go test ./tests/api_test.go
+docker compose down -v

@@ -4,9 +4,9 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"math"
 	"nobi-assesment/internal/domain"
 	"nobi-assesment/internal/repository"
+	"nobi-assesment/pkg/utils"
 	"time"
 )
 
@@ -73,8 +73,8 @@ func (u *transactionUsecase) Deposit(ctx context.Context, req *domain.DepositReq
 	}
 
 	// Calculate NAB and new units
-	currentNAB := validateNAB(investment.TotalBalance, investment.TotalUnits)
-	newUnits := roundDown(req.Amount/currentNAB, 4)
+	currentNAB := utils.ValidateNAB(investment.TotalBalance, investment.TotalUnits)
+	newUnits := utils.RoundDown(req.Amount/currentNAB, 4)
 
 	// Update investment
 	err = u.investmentRepo.UpdateBalance(ctx, req.InvestmentID, req.Amount, newUnits)
@@ -88,10 +88,11 @@ func (u *transactionUsecase) Deposit(ctx context.Context, req *domain.DepositReq
 
 	customerInvestment, err = u.custInvestRepo.GetByCustomerAndInvestment(ctx, req.CustomerID, req.InvestmentID)
 	if err != nil {
-		if errors.Is(err, errors.New("customer investment not found")) {
+		// Check if it's a "not found" error or empty data rows
+		if err.Error() == "sql: no rows in result set" {
 			// Create new customer investment
 			newCustomerInvestment := &domain.CustomerInvestment{
-				ID:           generateUUID(),
+				ID:           utils.GenerateUUID(),
 				CustomerID:   req.CustomerID,
 				InvestmentID: req.InvestmentID,
 				Units:        newUnits,
@@ -115,7 +116,7 @@ func (u *transactionUsecase) Deposit(ctx context.Context, req *domain.DepositReq
 
 	// Create transaction record
 	transaction := &domain.Transaction{
-		ID:              generateUUID(),
+		ID:              utils.GenerateUUID(),
 		CustomerID:      req.CustomerID,
 		InvestmentID:    req.InvestmentID,
 		Type:            "DEPOSIT",
@@ -135,7 +136,7 @@ func (u *transactionUsecase) Deposit(ctx context.Context, req *domain.DepositReq
 		return nil, err
 	}
 
-	currentBalance := roundDown(totalUnitsAfterDeposit*currentNAB, 2)
+	currentBalance := utils.RoundDown(totalUnitsAfterDeposit*currentNAB, 2)
 
 	return &domain.TransactionResponse{
 		TransactionID:  transaction.ID,
@@ -160,24 +161,6 @@ func (u *transactionUsecase) GetCustomerTransactions(ctx context.Context, custom
 
 func (u *transactionUsecase) GetCustomerPortfolio(ctx context.Context, customerID, investmentID string) (*domain.CustomerPortfolio, error) {
 	return u.custInvestRepo.GetCustomerPortfolio(ctx, customerID, investmentID)
-}
-
-// Helper functions
-func generateUUID() string {
-	return "uuid-" + time.Now().Format("20060102150405")
-}
-
-func roundDown(value float64, places int) float64 {
-	shift := math.Pow(10, float64(places))
-	return math.Floor(value*shift) / shift
-}
-
-func validateNAB(totalBalance, totalUnits float64) float64 {
-	if totalUnits <= 0 {
-		return 1.0
-	}
-
-	return roundDown(totalBalance/totalUnits, 4)
 }
 
 func (u *transactionUsecase) Withdraw(ctx context.Context, req *domain.WithdrawRequest) (*domain.TransactionResponse, error) {
@@ -212,8 +195,8 @@ func (u *transactionUsecase) Withdraw(ctx context.Context, req *domain.WithdrawR
 	}
 
 	// Calculate NAB
-	currentNAB := validateNAB(investment.TotalBalance, investment.TotalUnits)
-	withdrawUnits := roundDown(req.Amount/currentNAB, 4)
+	currentNAB := utils.ValidateNAB(investment.TotalBalance, investment.TotalUnits)
+	withdrawUnits := utils.RoundDown(req.Amount/currentNAB, 4)
 
 	// Get customer investment
 	customerInvestment, err := u.custInvestRepo.GetByCustomerAndInvestment(ctx, req.CustomerID, req.InvestmentID)
@@ -240,7 +223,7 @@ func (u *transactionUsecase) Withdraw(ctx context.Context, req *domain.WithdrawR
 
 	// Create transaction record
 	transaction := &domain.Transaction{
-		ID:              generateUUID(),
+		ID:              utils.GenerateUUID(),
 		CustomerID:      req.CustomerID,
 		InvestmentID:    req.InvestmentID,
 		Type:            "WITHDRAW",
@@ -261,7 +244,7 @@ func (u *transactionUsecase) Withdraw(ctx context.Context, req *domain.WithdrawR
 	}
 
 	remainingUnits := customerInvestment.Units - withdrawUnits
-	currentBalance := roundDown(remainingUnits*currentNAB, 2)
+	currentBalance := utils.RoundDown(remainingUnits*currentNAB, 2)
 
 	return &domain.TransactionResponse{
 		TransactionID:  transaction.ID,

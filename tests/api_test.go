@@ -43,6 +43,9 @@ func TestApi(t *testing.T) {
 }
 
 func getTestCases() []TestCase {
+	id_customer := ""
+	id_investment := ""
+
 	return []TestCase{
 		{
 			Name: "Test to register new customer",
@@ -61,6 +64,80 @@ func getTestCases() []TestCase {
 					Expect: func(t *testing.T, ctx context.Context, tc *TestCase, r *http.Response, m map[string]any) {
 						require.Equal(t, http.StatusCreated, r.StatusCode)
 						RequireIsUUID(t, m["id"].(string))
+						id_customer = m["id"].(string)
+					},
+				},
+			},
+		},
+		{
+			Name: "Test to update investments",
+			Steps: []TestCaseStep{
+				{
+					Request: func(t *testing.T, ctx context.Context, tc *TestCase) (*http.Request, error) {
+						req := map[string]string{
+							"name": "asset_" + uuid.New().String()[:8],
+						}
+
+						body, err := json.Marshal(req)
+						require.NoError(t, err)
+
+						return http.NewRequest("POST", ApiURL+"/api/investments", bytes.NewReader(body))
+					},
+					Expect: func(t *testing.T, ctx context.Context, tc *TestCase, r *http.Response, m map[string]any) {
+						require.Equal(t, http.StatusCreated, r.StatusCode)
+						id_investment = m["id"].(string)
+					},
+				},
+			},
+		},
+		{
+			Name: "Test to deposit",
+			Steps: []TestCaseStep{
+				{
+					Request: func(t *testing.T, ctx context.Context, tc *TestCase) (*http.Request, error) {
+						req := map[string]interface{}{
+							"customer_id":   id_customer,
+							"investment_id": id_investment,
+							"amount":        100000.00,
+						}
+
+						body, err := json.Marshal(req)
+						require.NoError(t, err)
+
+						return http.NewRequest("POST", ApiURL+"/api/transactions/deposit", bytes.NewReader(body))
+					},
+					Expect: func(t *testing.T, ctx context.Context, tc *TestCase, r *http.Response, m map[string]any) {
+						t.Log("POST /api/transactions/deposit")
+						t.Log(id_customer)
+						t.Log(id_investment)
+						require.Equal(t, http.StatusOK, r.StatusCode)
+						RequireIsUUID(t, m["transaction_id"].(string))
+					},
+				},
+			},
+		},
+		{
+			Name: "Test to withdraw",
+			Steps: []TestCaseStep{
+				{
+					Request: func(t *testing.T, ctx context.Context, tc *TestCase) (*http.Request, error) {
+						req := map[string]interface{}{
+							"customer_id":   id_customer,
+							"investment_id": id_investment,
+							"amount":        50000.00,
+						}
+
+						body, err := json.Marshal(req)
+						require.NoError(t, err)
+
+						return http.NewRequest("POST", ApiURL+"/api/transactions/withdraw", bytes.NewReader(body))
+					},
+					Expect: func(t *testing.T, ctx context.Context, tc *TestCase, r *http.Response, m map[string]any) {
+						t.Log("POST /api/transactions/withdraw")
+						t.Log(id_customer)
+						t.Log(id_investment)
+						require.Equal(t, http.StatusOK, r.StatusCode)
+						RequireIsUUID(t, m["transaction_id"].(string))
 					},
 				},
 			},
