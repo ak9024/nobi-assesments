@@ -2,6 +2,10 @@
 
 API service for NOBI Investment products using Golang Fiber and MySQL.
 
+## Endpoint List Changes  
+
+I have made some changes to the endpoint list to make it neater and easier to read.
+
 ### Structures
 
 ```
@@ -39,6 +43,8 @@ API service for NOBI Investment products using Golang Fiber and MySQL.
 
 ### Getting Started
 
+If you have `docker` just run `sh run.sh` to run docker compose and integration testing for the api, please check ./tests/api_test.go for references.
+
 ```shell
 # clone the repository
 git clone https://github.com/username/nobi-investment.git
@@ -50,6 +56,7 @@ go mod tidy
 cp .env.example .env
 # run mysql
 docker compose up -d
+go run .
 ```
 
 For more references please check `./nobi-assesment.postman_collection.json` postman collection for the API.
