@@ -70,7 +70,7 @@ func getTestCases() []TestCase {
 			},
 		},
 		{
-			Name: "Test to update investments",
+			Name: "Test to add product investments",
 			Steps: []TestCaseStep{
 				{
 					Request: func(t *testing.T, ctx context.Context, tc *TestCase) (*http.Request, error) {
@@ -138,6 +138,23 @@ func getTestCases() []TestCase {
 						t.Log(id_investment)
 						require.Equal(t, http.StatusOK, r.StatusCode)
 						RequireIsUUID(t, m["transaction_id"].(string))
+					},
+				},
+			},
+		},
+		{
+			Name: "Test to get portfolio",
+			Steps: []TestCaseStep{
+				{
+					Request: func(t *testing.T, ctx context.Context, tc *TestCase) (*http.Request, error) {
+						return http.NewRequest("GET", ApiURL+"/api/portfolio/"+id_customer+"/"+id_investment, nil)
+					},
+					Expect: func(t *testing.T, ctx context.Context, tc *TestCase, r *http.Response, m map[string]any) {
+						t.Log("POST /api/portfolio/" + id_customer + "/" + id_investment)
+						t.Log(id_customer)
+						t.Log(id_investment)
+						t.Log(m)
+						require.Equal(t, http.StatusOK, r.StatusCode)
 					},
 				},
 			},

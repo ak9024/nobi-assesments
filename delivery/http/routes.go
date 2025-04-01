@@ -17,6 +17,14 @@ func SetupRoutes(
 	// Middleware
 	app.Use(logger.New())
 
+	// Health check endpoint to verify the API is running and DB connection
+	app.Get("/health", func(c *fiber.Ctx) error {
+		return c.Status(fiber.StatusOK).JSON(fiber.Map{
+			"status":  "success",
+			"message": "API is running",
+		})
+	})
+
 	// API routes
 	api := app.Group("/api")
 
