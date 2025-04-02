@@ -3,9 +3,9 @@ package handler
 import (
 	"nobi-assesment/internal/domain"
 	"nobi-assesment/internal/usecase"
+	"nobi-assesment/pkg/utils"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/google/uuid"
 )
 
 type CustomerHandler struct {
@@ -28,9 +28,21 @@ func (h *CustomerHandler) Create(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Customer name is required"})
 	}
 
-	customer.ID = uuid.New().String()
+	// Check if customer with the same name already exists
+	existingCustomers, err := h.customerUsecase.GetAll(c.Context())
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to check customer uniqueness"})
+	}
 
-	err := h.customerUsecase.Create(c.Context(), customer)
+	for _, existingCustomer := range existingCustomers {
+		if existingCustomer.Name == customer.Name {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Customer name must be unique"})
+		}
+	}
+
+	customer.ID = utils.GenerateUUID()
+
+	err = h.customerUsecase.Create(c.Context(), customer)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to save customer"})
 	}
