@@ -74,9 +74,9 @@ Portfolio
 
 GET /api/portfolio/{customer_id}/{investment_id} - Get portfolio details for a customer and investment
 
-If you have `docker` just run `sh run.sh` to run docker compose and integration testing for the api, please check ./tests/api_test.go for references.
-
 ### For testing
+
+If you have `docker` just run `sh run.sh` to run docker compose and integration testing for the api, please check ./tests/api_test.go for references.
 
 ```shell
 # clone the repository
