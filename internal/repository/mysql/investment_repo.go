@@ -17,17 +17,18 @@ func NewMySQLInvestmentRepository(db *sql.DB) repository.InvestmentRepository {
 }
 
 func (r *mysqlInvestmentRepository) Create(ctx context.Context, investment *domain.Investment) error {
-	query := "INSERT INTO investments (id, name, total_units, total_balance) VALUES (?, ?, ?, ?)"
-	_, err := r.db.ExecContext(ctx, query, investment.ID, investment.Name, investment.TotalUnits, investment.TotalBalance)
+	query := "INSERT INTO investments (id, name, total_units, total_balance, current_nab) VALUES (?, ?, ?, ?, ?)"
+	_, err := r.db.ExecContext(ctx, query, investment.ID, investment.Name, investment.TotalUnits, investment.TotalBalance, investment.NAB)
 	return err
 }
 
 func (r *mysqlInvestmentRepository) GetByID(ctx context.Context, id string) (*domain.Investment, error) {
-	query := "SELECT id, name, total_units, total_balance FROM investments WHERE id = ?"
+	query := "SELECT id, name, total_units, total_balance, current_nab FROM investments WHERE id = ?"
 
 	var investment domain.Investment
+	var currentNAB float64
 	err := r.db.QueryRowContext(ctx, query, id).Scan(
-		&investment.ID, &investment.Name, &investment.TotalUnits, &investment.TotalBalance)
+		&investment.ID, &investment.Name, &investment.TotalUnits, &investment.TotalBalance, &currentNAB)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, err
@@ -35,13 +36,17 @@ func (r *mysqlInvestmentRepository) GetByID(ctx context.Context, id string) (*do
 		return nil, err
 	}
 
-	investment.NAB = utils.ValidateNAB(investment.TotalBalance, investment.TotalUnits)
+	if currentNAB <= 0 {
+		investment.NAB = utils.ValidateNAB(investment.TotalBalance, investment.TotalUnits)
+	} else {
+		investment.NAB = currentNAB
+	}
 
 	return &investment, nil
 }
 
 func (r *mysqlInvestmentRepository) GetAll(ctx context.Context) ([]*domain.Investment, error) {
-	query := "SELECT id, name, total_units, total_balance FROM investments"
+	query := "SELECT id, name, total_units, total_balance, current_nab FROM investments"
 	rows, err := r.db.QueryContext(ctx, query)
 	if err != nil {
 		return nil, err
@@ -51,12 +56,21 @@ func (r *mysqlInvestmentRepository) GetAll(ctx context.Context) ([]*domain.Inves
 	investments := []*domain.Investment{}
 	for rows.Next() {
 		var investment domain.Investment
+		var currentNAB float64
 		if err := rows.Scan(
-			&investment.ID, &investment.Name, &investment.TotalUnits, &investment.TotalBalance); err != nil {
+			&investment.ID, &investment.Name, &investment.TotalUnits, &investment.TotalBalance, &currentNAB); err != nil {
 			return nil, err
 		}
 
-		investment.NAB = utils.ValidateNAB(investment.TotalBalance, investment.TotalUnits)
+		if currentNAB <= 0 {
+			investment.NAB = utils.ValidateNAB(
+				investment.TotalBalance,
+				investment.TotalUnits,
+			)
+		} else {
+			investment.NAB = currentNAB
+		}
+
 		investments = append(investments, &investment)
 	}
 

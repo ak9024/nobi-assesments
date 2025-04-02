@@ -3,9 +3,9 @@ package handler
 import (
 	"nobi-assesment/internal/domain"
 	"nobi-assesment/internal/usecase"
+	"nobi-assesment/pkg/utils"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/google/uuid"
 )
 
 type InvestmentHandler struct {
@@ -28,7 +28,19 @@ func (h *InvestmentHandler) Create(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Investment product name is required"})
 	}
 
-	investment.ID = uuid.New().String()
+	if investment.NAB <= 0 {
+		investment.NAB = 1
+	}
+
+	if investment.TotalBalance <= 0 {
+		investment.TotalBalance = 0
+	}
+
+	if investment.TotalUnits <= 0 {
+		investment.TotalUnits = 0
+	}
+
+	investment.ID = utils.GenerateUUID()
 
 	err := h.investmentUsecase.Create(c.Context(), investment)
 	if err != nil {

@@ -23,9 +23,6 @@ func NewInvestmentUsecase(investmentRepo repository.InvestmentRepository) Invest
 }
 
 func (u *investmentUsecase) Create(ctx context.Context, investment *domain.Investment) error {
-	investment.NAB = 1.0
-	investment.TotalUnits = 0
-	investment.TotalBalance = 0
 	return u.investmentRepo.Create(ctx, investment)
 }
 

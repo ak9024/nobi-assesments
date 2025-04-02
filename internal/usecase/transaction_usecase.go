@@ -73,7 +73,12 @@ func (u *transactionUsecase) Deposit(ctx context.Context, req *domain.DepositReq
 	}
 
 	// Calculate NAB and new units
-	currentNAB := utils.ValidateNAB(investment.TotalBalance, investment.TotalUnits)
+	var currentNAB float64
+	if investment.NAB <= 0 {
+		currentNAB = utils.ValidateNAB(investment.TotalBalance, investment.TotalUnits)
+	} else {
+		currentNAB = investment.NAB
+	}
 	newUnits := utils.RoundDown(req.Amount/currentNAB, 4)
 
 	// Update investment
