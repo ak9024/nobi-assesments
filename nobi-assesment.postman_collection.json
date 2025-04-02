@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "4c398d25-11c6-40ae-ad6a-d76006789f4e",
-		"name": "nobi-assesment",
+		"name": "nobi-assesment-v2",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "26789363"
 	},
@@ -10,7 +10,7 @@
 			"name": "customers",
 			"item": [
 				{
-					"name": "/api/vustomers",
+					"name": "/api/customers",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -69,7 +69,7 @@
 					"response": []
 				},
 				{
-					"name": "/api/customers/uuid",
+					"name": "/api/customers/<customer_uuid>",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -100,7 +100,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"asset terbaik\"\n}",
+							"raw": "{\n    \"name\": \"just_asset_test_5\",\n    \"nab\": 2.4000\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -147,7 +147,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:3000/api/investments/4cf9942d-6a22-4bb2-ae33-fd5e2f7aefc4",
+							"raw": "localhost:3000/api/investments/fdc16077-23e8-4385-80df-fcf2539f30c2",
 							"host": [
 								"localhost"
 							],
@@ -155,7 +155,7 @@
 							"path": [
 								"api",
 								"investments",
-								"4cf9942d-6a22-4bb2-ae33-fd5e2f7aefc4"
+								"fdc16077-23e8-4385-80df-fcf2539f30c2"
 							]
 						}
 					},
@@ -173,7 +173,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"customer_id\": \"2fd9b202-b8eb-4951-936e-04e0508e0be7\",\n    \"investment_id\": \"4cf9942d-6a22-4bb2-ae33-fd5e2f7aefc4\",\n    \"amount\": 1000000\n}",
+							"raw": "{\n    \"customer_id\": \"d4325cd4-9f5a-4c17-9139-491b37ad7ea2\",\n    \"investment_id\": \"fdc16077-23e8-4385-80df-fcf2539f30c2\",\n    \"amount\": 123232\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -200,6 +200,15 @@
 					"request": {
 						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"customer_id\": \"d4325cd4-9f5a-4c17-9139-491b37ad7ea2\",\n    \"investment_id\": \"fdc16077-23e8-4385-80df-fcf2539f30c2\",\n    \"amount\": 123232\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "localhost:3000/api/transactions/withdraw",
 							"host": [
@@ -221,7 +230,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:3000/api/transactions/customer/2fd9b202-b8eb-4951-936e-04e0508e0be7",
+							"raw": "localhost:3000/api/transactions/customer/557e1caa-ac32-45ee-ad7d-71ec6c541c89",
 							"host": [
 								"localhost"
 							],
@@ -230,7 +239,7 @@
 								"api",
 								"transactions",
 								"customer",
-								"2fd9b202-b8eb-4951-936e-04e0508e0be7"
+								"557e1caa-ac32-45ee-ad7d-71ec6c541c89"
 							]
 						}
 					},
