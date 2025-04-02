@@ -42,7 +42,37 @@ I have made some changes to the endpoint list to make it neater and easier to re
 
 ### Getting Started
 
-Just for notes this project just covering one cycle transaction with assumption NAB value keep with default value == 1.
+Just for notes this project just covering one cycle transaction with assumption NAB value keep with default value == 1, if want to add to adjust NAB, just hit endpoints `/api/investments` with POST method to create new investment with adjustable NAB value.
+
+### API Endpoints
+
+Customers
+
+POST /api/customers - Create a new customer
+
+GET /api/customers - Get a list of customers
+
+GET /api/customers/{customer_uuid} - Get details of a specific customer
+
+Investments
+
+POST /api/investments - Create a new investment
+
+GET /api/investments - Get a list of investments
+
+GET /api/investments/{investment_uuid} - Get details of a specific investment
+
+Transactions
+
+POST /api/transactions/deposit - Make a deposit transaction
+
+POST /api/transactions/withdraw - Make a withdrawal transaction
+
+GET /api/transactions/customer/{customer_uuid} - Get transactions for a specific customer
+
+Portfolio
+
+GET /api/portfolio/{customer_id}/{investment_id} - Get portfolio details for a customer and investment
 
 If you have `docker` just run `sh run.sh` to run docker compose and integration testing for the api, please check ./tests/api_test.go for references.
 
