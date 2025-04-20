@@ -94,7 +94,7 @@ If you have `docker` just run `sh run.sh` to run docker compose and integration 
 
 ```shell
 # clone the repository
-git clone https://github.com/username/nobi-investment.git
+git clone https://github.com/ak9024/nobi-investment.git
 cd nobi-investment
 # run all project dependencies
 docker compose up -d
@@ -106,7 +106,7 @@ Then open postman and import the collection from `./nobi-assesment.postman_colle
 
 ```shell
 # clone the repository
-git clone https://github.com/username/nobi-investment.git
+git clone https://github.com/ak9024/nobi-investment.git
 cd nobi-investment
 
 # download dependencies
